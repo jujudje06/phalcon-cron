@@ -6,19 +6,15 @@ use Sid\Phalcon\Cron\Job;
 
 class System extends Job
 {
-    /**
-     * @var string
-     */
-    protected $command;
+    protected string $command;
+    protected ?string $output;
 
     /**
-     * @var string
+     * @param string $expression
+     * @param string $command
+     * @param string|null $output
      */
-    protected $output;
-
-
-
-    public function __construct(string $expression, string $command, string $output = null)
+    public function __construct(string $expression, string $command, ?string $output = null)
     {
         parent::__construct($expression);
 
@@ -26,8 +22,9 @@ class System extends Job
         $this->output  = $output;
     }
 
-
-
+    /**
+     * @return string
+     */
     public function getCommand() : string
     {
         return $this->command;
@@ -36,13 +33,14 @@ class System extends Job
     /**
      * @return string|null
      */
-    public function getOutput()
+    public function getOutput(): ?string
     {
         return $this->output;
     }
 
-
-
+    /**
+     * @return string
+     */
     private function buildCommand() : string
     {
         $command = $this->getCommand();
@@ -55,15 +53,11 @@ class System extends Job
         return $command;
     }
 
-
-
     /**
      * @return string|null
      */
-    public function runInForeground()
+    public function runInForeground(): ?string
     {
-        return shell_exec(
-            $this->buildCommand()
-        );
+        return shell_exec($this->buildCommand()) ?: null;
     }
 }

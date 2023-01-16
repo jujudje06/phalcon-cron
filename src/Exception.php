@@ -2,6 +2,8 @@
 
 namespace Sid\Phalcon\Cron;
 
-class Exception extends \Phalcon\Exception
+use Phalcon\Exception as PhalconException;
+
+class Exception extends PhalconException
 {
 }

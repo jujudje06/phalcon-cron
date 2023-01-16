@@ -3,28 +3,27 @@
 namespace Sid\Phalcon\Cron;
 
 use DateTime;
+use Sid\Cron\Manager as SidCronManager;
 
-class Manager extends \Sid\Cron\Manager
+class Manager extends SidCronManager
 {
     /**
      * For background jobs.
      */
-    protected $processes = [];
+    protected array $processes = [];
 
-
-
-    public function addCrontab(string $filename)
+    /**
+     * @param string $filename
+     * @return void
+     * @throws \Sid\Phalcon\Cron\Exception
+     */
+    public function addCrontab(string $filename): void
     {
         $crontab = new CrontabParser($filename);
-
-        $jobs = $crontab->getJobs();
-
-        foreach ($jobs as $job) {
+        foreach ($crontab->getJobs() as $job) {
             $this->add($job);
         }
     }
-
-
 
     /**
      * Run all due jobs in the foreground.
@@ -34,7 +33,6 @@ class Manager extends \Sid\Cron\Manager
         $jobs = $this->getDueJobs($now);
 
         $outputs = [];
-
         foreach ($jobs as $job) {
             $outputs[] = $job->runInForeground();
         }
@@ -56,24 +54,20 @@ class Manager extends \Sid\Cron\Manager
         return $this->processes;
     }
 
-
-
     /**
      * Wait for all jobs running in the background to finish.
      */
-    public function wait()
+    public function wait(): void
     {
         foreach ($this->processes as $process) {
             $process->wait();
         }
     }
 
-
-
     /**
      * Terminate all jobs running in the background.
      */
-    public function terminate()
+    public function terminate(): void
     {
         foreach ($this->processes as $process) {
             $process->terminate();
@@ -83,7 +77,7 @@ class Manager extends \Sid\Cron\Manager
     /**
      * Kill all jobs running in the background.
      */
-    public function kill()
+    public function kill(): void
     {
         foreach ($this->processes as $process) {
             $process->kill();

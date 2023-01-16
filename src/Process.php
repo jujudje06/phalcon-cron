@@ -9,18 +9,14 @@ namespace Sid\Phalcon\Cron;
  */
 class Process
 {
+    protected int $processID;
+
     /**
-     * @var int
+     * @param int $processID
      */
-    protected $processID;
-
-
-
     public function __construct(int $processID)
     {
         $this->processID = $processID;
-
-
 
         register_shutdown_function(
             [
@@ -30,20 +26,19 @@ class Process
         );
     }
 
-
-
-    public function getProcessID() : int
+    /**
+     * @return int
+     */
+    public function getProcessID(): int
     {
         return $this->processID;
     }
-
-
 
     /**
      * Determine if this process is currently running. Defunct/zombie processes
      * are ignored.
      */
-    public function isRunning() : bool
+    public function isRunning(): bool
     {
         $result = shell_exec(
             sprintf(
@@ -51,26 +46,21 @@ class Process
                 $this->getProcessID()
             )
         );
-
         $result = trim($result, "\n");
 
         return ($result !== "");
     }
 
-
-
     /**
      * Wait for the process to finish.
      */
-    public function wait()
+    public function wait(): void
     {
         pcntl_waitpid(
             $this->getProcessID(),
             $status
         );
     }
-
-
 
     /**
      * Terminate the process.

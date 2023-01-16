@@ -8,19 +8,15 @@ use Sid\Phalcon\Cron\Job;
 
 class Phalcon extends Job
 {
-    /**
-     * @var array|null
-     */
-    protected $body;
-
-
+    protected ?array $body;
 
     /**
+     * @param string $expression
      * @param array|null $body
      *
-     * @throws Exception
+     * @throws \Sid\Phalcon\Cron\Exception
      */
-    public function __construct(string $expression, $body = null)
+    public function __construct(string $expression, ?array $body = null)
     {
         $di = $this->getDI();
 
@@ -30,34 +26,26 @@ class Phalcon extends Job
             );
         }
 
-
-
         parent::__construct($expression);
-
-
 
         $this->body = $body;
     }
 
-
-
     /**
      * @return array|null
      */
-    public function getBody()
+    public function getBody(): ?array
     {
         return $this->body;
     }
 
-
-
+    /**
+     * @return string
+     */
     public function runInForeground() : string
     {
         $di = $this->getDI();
-
         $console = $di->get("console");
-
-
 
         ob_start();
 
@@ -68,8 +56,6 @@ class Phalcon extends Job
         $contents = ob_get_contents();
 
         ob_end_clean();
-
-
 
         return $contents;
     }

@@ -5,30 +5,32 @@ namespace Sid\Phalcon\Cron;
 use Cron\CronExpression;
 use DateTime;
 use Phalcon\Di\Injectable;
+use Sid\Cron\JobInterface;
 
-abstract class Job extends Injectable implements \Sid\Cron\JobInterface
+abstract class Job extends Injectable implements JobInterface
 {
+    protected string $expression;
+
     /**
-     * @var string
+     * @param string $expression
      */
-    protected $expression;
-
-
-
     public function __construct(string $expression)
     {
         $this->expression = $expression;
     }
 
-
-
+    /**
+     * @return string
+     */
     public function getExpression() : string
     {
         return $this->expression;
     }
 
-
-
+    /**
+     * @param \DateTime|null $datetime
+     * @return bool
+     */
     public function isDue(DateTime $datetime = null) : bool
     {
         $cronExpression = CronExpression::factory(
@@ -38,12 +40,10 @@ abstract class Job extends Injectable implements \Sid\Cron\JobInterface
         return $cronExpression->isDue($datetime);
     }
 
-
-
     /**
      * @return mixed
      */
-    abstract public function runInForeground();
+    abstract public function runInForeground(): mixed;
 
     /**
      * @throws Exception
@@ -67,8 +67,6 @@ abstract class Job extends Injectable implements \Sid\Cron\JobInterface
             // @codeCoverageIgnoreEnd
         }
 
-        $process = new Process($processID);
-
-        return $process;
+        return new Process($processID);
     }
 }

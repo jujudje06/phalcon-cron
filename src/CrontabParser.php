@@ -6,12 +6,7 @@ use Sid\Phalcon\Cron\Job\System as SystemJob;
 
 class CrontabParser
 {
-    /**
-     * @var string
-     */
-    protected $filename;
-
-
+    protected string $filename;
 
     /**
      * @throws Exception
@@ -27,16 +22,15 @@ class CrontabParser
         $this->filename = $filename;
     }
 
-
-
+    /**
+     * @return array
+     */
     public function getJobs() : array
     {
         $contents = file_get_contents($this->filename);
-
         $lines = explode(PHP_EOL, $contents);
 
         $jobs = [];
-
         foreach ($lines as $line) {
             $cronLineRegEx = "/^(\@\w+|[^\s]+\s[^\s]+\s[^\s]+\s[^\s]+\s[^\s]+)\s+(.*)$/";
 
