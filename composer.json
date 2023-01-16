@@ -4,6 +4,13 @@
     "type":        "library",
     "license":     "MIT",
 
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jujudje06/cron.git"
+        }
+    ],
+    
     "authors": [
         {
             "name":     "Sid Roberts",
